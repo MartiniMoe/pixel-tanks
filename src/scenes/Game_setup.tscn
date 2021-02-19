@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/Game_setup.gd" type="Script" id=1]
+
+[node name="Game_setup" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Multiplayer_configure" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Join_game" type="Button" parent="Multiplayer_configure"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -38.5
+margin_top = -10.0
+margin_right = 38.5
+margin_bottom = 10.0
+text = "Join Game"
+
+[node name="Client_name" type="LineEdit" parent="Multiplayer_configure"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -29.0
+margin_right = 29.0
+margin_bottom = 24.0
+text = "New Player"
+align = 1
+placeholder_text = "enter name"
+[connection signal="pressed" from="Multiplayer_configure/Join_game" to="." method="_on_Join_game_pressed"]
