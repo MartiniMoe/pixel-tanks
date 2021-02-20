@@ -1,12 +1,11 @@
 extends KinematicBody2D
 
-const speed = 200
-const rotation_speed = 1.5
 var direction = Vector2(0, 0)
 
 # For the remote players
 puppet var puppet_position = Vector2() setget puppet_position_set
 puppet var puppet_rotation = 0.0
+puppet var puppet_turret_rotation = 0.0
 puppet var puppet_direction = Vector2()
 
 func _ready():
@@ -14,7 +13,7 @@ func _ready():
 
 func _physics_process(delta):
 	if is_network_master():
-		var rotation_input = rotation_speed * delta * (int(Input.is_action_pressed("ui_right")) - int(Input.is_action_pressed("ui_left")))
+		var rotation_input = $Base.ROTATION_SPEED * delta * (int(Input.is_action_pressed("ui_right")) - int(Input.is_action_pressed("ui_left")))
 		var drive_input = int(Input.is_action_pressed("ui_down")) - int(Input.is_action_pressed("ui_up"))
 		
 		# Mirror rotation when driving backwards
@@ -24,17 +23,20 @@ func _physics_process(delta):
 			rotate(rotation_input * -1)
 		
 		# Get global front facing direction
-		var orientation_global = (to_global(Vector2(0, 1)) - global_position)
+		var orientation_global = (to_global(Vector2(-1, 0)) - global_position)
 		
 		direction = Vector2(drive_input * orientation_global).normalized()
 		
-		move_and_slide(direction * speed)
+		move_and_slide(direction * $Base.SPEED)
+		
+		$Turret.look_at(get_global_mouse_position())
 	else:
 		# Make rotation look smooth when player lags without tween
 		rotation = lerp(rotation, puppet_rotation, delta * 8)
+		$Turret.rotation = lerp($Turret.rotation, puppet_turret_rotation, delta * 8)
 		# Predict movement if nothing has been received
 		if not $Tween.is_active():
-			move_and_slide(puppet_direction * speed)
+			move_and_slide(puppet_direction * $Base.SPEED)
 
 func puppet_position_set(new_value) -> void:
 	puppet_position = new_value
@@ -50,3 +52,4 @@ func _on_Network_tick_rate_timeout():
 		rset_unreliable("puppet_position", global_position)
 		rset_unreliable("puppet_direction", direction)
 		rset_unreliable("puppet_rotation", rotation)
+		rset_unreliable("puppet_turret_rotation", $Turret.rotation)
