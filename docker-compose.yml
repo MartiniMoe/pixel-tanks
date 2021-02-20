@@ -4,14 +4,11 @@ services:
     image: "ioribranford/godot-docker:3.2.3"
     volumes:
       - .:/project
-    command: godot --quiet --export HTML5 ../game/pixeltanks.html project/src/project.godot
+    command: godot --quiet --export HTML5_Pixeltanks ../game/pixeltanks.html project/src/project.godot
     profiles:
       - export
   gameserver:
     build: .
-    environment:
-      - SERVER
-      - GAMEPORT
     ports:
       - "${GAMEPORT}:${GAMEPORT}"
       - "${GAMEPORT}:${GAMEPORT}/udp"

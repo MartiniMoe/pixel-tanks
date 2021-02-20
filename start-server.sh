@@ -1,6 +1,7 @@
 #!/bin/bash
 
-PROJECT=./src/project.godot
+SRCDIR=./src
+PROJECT=$SRCDIR/project.godot
 OUTDIR=./game
 
 if [ "$EUID" -ne 0 ]
@@ -18,6 +19,10 @@ if [ ! -d $OUTDIR ]; then
   mkdir -p $OUTDIR
 fi
 
+echo "Stopping existing containers"
+docker-compose down
+echo "Copying config"
+cp .env $SRCDIR/.env
 echo "Exporting project"
 docker-compose --profile export up
 echo "Launching servers"
