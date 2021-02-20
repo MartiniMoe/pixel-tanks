@@ -9,6 +9,7 @@ func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_connected_to_server")
+	randomize()
 
 func _player_connected(id):
 	# Fires for client and server
