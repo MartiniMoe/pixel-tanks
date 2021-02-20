@@ -1,3 +1,2 @@
 game/*
-godot_headless
-godot_server
+.env

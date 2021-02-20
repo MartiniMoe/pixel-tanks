@@ -1,8 +1,7 @@
 extends Node
 
-const DEFAUL_PORT = 3456
-const MAX_CLIENTS = 16
-
+var server = "127.0.0.1"
+var port = "3456"
 var peer = null
 var playernode = load("res://scenes/Player.tscn")
 
@@ -13,7 +12,12 @@ func _ready():
 		# This runs when launched by godot server oder headless binary
 		# or when launched with --server
 		create_server()
-
+	
+	if OS.get_environment("GAMEPORT") != "":
+		port = OS.get_environment("GAMEPORT")
+	if OS.get_environment("SERVER") != "":
+		server = OS.get_environment("SERVER")
+	
 func _physics_process(delta):
 	# poll for new data. Needed for websocket
 	if peer != null:
@@ -21,14 +25,14 @@ func _physics_process(delta):
 			peer.poll()
 
 func create_server():
-	print("Creating server for " + str(MAX_CLIENTS) + " clients on port " + str (DEFAUL_PORT))
+	print("Creating server at " + str(server) + ":" + str(port))
 	peer = WebSocketServer.new()
-	peer.listen(DEFAUL_PORT, PoolStringArray(), true)
+	peer.listen(port, PoolStringArray(), true)
 	get_tree().set_network_peer(peer)
 
 func join_server():
 	peer = WebSocketClient.new()
-	var server_url = "ws://127.0.0.1:" + str(DEFAUL_PORT)
+	var server_url = "ws://" + str(server) + ":" + str(port)
 	peer.connect_to_url(server_url, PoolStringArray(), true)
 	get_tree().set_network_peer(peer)
 
