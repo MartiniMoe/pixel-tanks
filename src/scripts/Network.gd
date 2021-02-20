@@ -48,7 +48,7 @@ func create_server():
 func join_server():
 	peer = WebSocketClient.new()
 	# Client always connects to port 80/game because of Traefik reverseproxy!
-	var server_url = "ws://" + str(server) + "/game"
+	var server_url = "wss://" + str(server) + "/game"
 	peer.connect_to_url(server_url, PoolStringArray(), true)
 	get_tree().set_network_peer(peer)
 
