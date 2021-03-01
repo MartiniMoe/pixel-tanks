@@ -20,10 +20,13 @@ if [ ! -d $OUTDIR ]; then
 fi
 
 echo "Stopping existing containers"
-docker-compose down
+docker-compose down --remove-orphans
+
 echo "Copying config"
 cp .env $SRCDIR/.env
+
 echo "Exporting project"
-docker-compose --profile export up
+docker-compose -f docker-compose_export.yml up
+
 echo "Launching servers"
-docker-compose --profile run up -d
+docker-compose up -d

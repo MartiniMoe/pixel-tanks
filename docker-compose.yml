@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3"
 services:
   reverse-proxy:
     image: traefik:latest
@@ -8,29 +8,18 @@ services:
     ports:
       - "80:80"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:z
     restart: unless-stopped
-    profiles:
-      - run
+    privileged: true
     labels:
       - "traefik.http.routers.dashboard.rule=Host(`${SERVER}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       - "traefik.http.routers.dashboard.service=api@internal"
 
-  export:
-    image: "ioribranford/godot-docker:3.2.3"
-    command: godot --quiet --export HTML5_Pixeltanks ../game/pixeltanks.html project/src/project.godot
-    volumes:
-      - .:/project
-    profiles:
-      - export
-
   gameserver:
     build: .
     volumes:
-      - .:/project
+      - .:/project:z
     restart: unless-stopped
-    profiles:
-      - run
     tty: true
     labels:
       - "traefik.http.routers.gameserver.rule=PathPrefix(`/game`)"
@@ -39,10 +28,8 @@ services:
   webserver:
     image: nginx:latest
     volumes:
-      - ./game:/usr/share/nginx/html
+      - ./game:/usr/share/nginx/html:z
     restart: unless-stopped
-    profiles:
-      - run
     labels:
       - "traefik.http.routers.webserver.rule=PathPrefix(`/`)"
       - "traefik.http.services.webserver.loadbalancer.server.port=${WEBPORT}"

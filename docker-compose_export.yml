@@ -1,0 +1,7 @@
+version: "3"
+services:
+  export:
+    image: "ioribranford/godot-docker:3.2.3"
+    command: godot --quiet --export HTML5_Pixeltanks ../game/pixeltanks.html project/src/project.godot
+    volumes:
+      - .:/project:z
