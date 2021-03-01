@@ -5,6 +5,10 @@ var port = "3456"
 var peer = null
 var playernode = load("res://scenes/Player.tscn")
 
+# To have all object names (bullets...) use increasing ids
+var networked_object_name_index = 0 setget networked_object_name_index_set
+puppet var puppet_networked_object_name_index = 0 setget puppet_networked_object_name_index_set
+
 func _ready():
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
 	
@@ -55,9 +59,19 @@ func join_server():
 	else:
 		print("Running from editor!")
 		server_url = "ws://" + str(server) + ":" + str(port)
+	print("Connecting to " + server_url)
 	peer.connect_to_url(server_url, PoolStringArray(), true)
 	get_tree().set_network_peer(peer)
 
 func _server_disconnected():
 	# Fires for client
 	print("Disconnected from the server")
+
+func puppet_networked_object_name_index_set(new_value):
+	networked_object_name_index = new_value
+
+func networked_object_name_index_set(new_value):
+	networked_object_name_index = new_value
+	
+	if get_tree().is_network_server():
+		rset("puppet_networked_object_name_index", networked_object_name_index)

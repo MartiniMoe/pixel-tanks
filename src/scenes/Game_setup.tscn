@@ -27,6 +27,9 @@ margin_top = -10.0
 margin_right = 38.5
 margin_bottom = 10.0
 text = "Join Game"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Client_name" type="LineEdit" parent="Multiplayer_configure"]
 anchor_left = 0.5
